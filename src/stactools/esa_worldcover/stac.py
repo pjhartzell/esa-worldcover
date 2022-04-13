@@ -38,19 +38,13 @@ def create_item(map_href: str,
 
     if read_href_modifier:
         modified_map_href = read_href_modifier(map_href)
-        modified_qua_href = read_href_modifier(qua_href)
     else:
         modified_map_href = map_href
-        modified_qua_href = qua_href
     with rasterio.open(modified_map_href) as dataset:
         bbox = dataset.bounds
         map_transform = list(dataset.transform)[0:6]
         map_shape = dataset.shape
         map_tags = dataset.tags()
-    with rasterio.open(modified_qua_href) as dataset:
-        qua_transform = list(dataset.transform)[0:6]
-        qua_shape = dataset.shape
-        qua_tags = dataset.tags()
 
     # --Item--
     geometry = shapely.geometry.mapping(shapely.geometry.box(*bbox))
@@ -105,11 +99,10 @@ def create_item(map_href: str,
     qua_asset.extra_fields = {"raster:bands": constants.QUALITY_RASTER}
 
     qua_proj = AssetProjectionExtension.ext(qua_asset)
-    qua_proj.transform = qua_transform
-    qua_proj.shape = qua_shape
-
-    qua_asset.common_metadata.created = str_to_datetime(
-        qua_tags["creation_time"])
+    map_transform[0] = constants.QUAlITY_SCALE
+    map_transform[4] = constants.QUAlITY_SCALE
+    qua_proj.transform = map_transform
+    qua_proj.shape = constants.QUALITY_SHAPE
 
     item.add_asset('input_quality', qua_asset)
 

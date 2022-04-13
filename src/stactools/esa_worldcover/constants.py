@@ -125,6 +125,8 @@ QUALITY_RASTER: List[Dict[str, Any]] = [
         "spatial_resolution": 60
     }
 ]
+QUALITY_SHAPE = [6000, 6000]
+QUAlITY_SCALE = 0.0005
 
 # --Collection--
 COLLECTION_TITLE = "ESA WorldCover 2020"
