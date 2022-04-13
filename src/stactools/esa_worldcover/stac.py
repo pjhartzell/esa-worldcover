@@ -1,3 +1,4 @@
+from copy import copy
 import logging
 import os
 from datetime import datetime, timezone
@@ -99,9 +100,10 @@ def create_item(map_href: str,
     qua_asset.extra_fields = {"raster:bands": constants.QUALITY_RASTER}
 
     qua_proj = AssetProjectionExtension.ext(qua_asset)
-    map_transform[0] = constants.QUAlITY_SCALE
-    map_transform[4] = constants.QUAlITY_SCALE
-    qua_proj.transform = map_transform
+    qua_transform = copy(map_transform)
+    qua_transform[0] = constants.QUAlITY_SCALE
+    qua_transform[4] = constants.QUAlITY_SCALE
+    qua_proj.transform = qua_transform
     qua_proj.shape = constants.QUALITY_SHAPE
 
     item.add_asset('input_quality', qua_asset)
